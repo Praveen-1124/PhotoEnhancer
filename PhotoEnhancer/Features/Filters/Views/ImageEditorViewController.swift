@@ -14,7 +14,7 @@ class ImageEditorViewController: UIViewController {
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var sliderView: UIView!
     @IBOutlet weak var filterTitleLabel: UILabel!
-    
+
     private let viewModel = ImageEditorViewModel()
     var originalImage = UIImage()
 
@@ -22,11 +22,10 @@ class ImageEditorViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         bindViewModel()
-        viewModel.setOriginalImage(image: originalImage)
     }
 
     deinit {
-
+        print("\(Self.self): Deinited")
     }
 
     private func setupUI() {
@@ -34,6 +33,7 @@ class ImageEditorViewController: UIViewController {
         self.title = "Filters"
         sliderView.alpha = 0
         setupCollectionView()
+        viewModel.setOriginalImage(image: originalImage)
     }
 
     private func setupCollectionView() {
@@ -166,12 +166,13 @@ extension ImageEditorViewController: UICollectionViewDelegate, UICollectionViewD
             let adjustment = viewModel.adjustments[indexPath.row]
             viewModel.selectAdjustment(adjustment)
             updateAdjustment(adjustment: adjustment)
-            collectionView.reloadData()
         }
+
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 70, height: 80)
     }
 }
-    
+

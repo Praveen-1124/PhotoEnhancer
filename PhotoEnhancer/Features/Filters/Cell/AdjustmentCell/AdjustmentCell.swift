@@ -13,7 +13,7 @@ class AdjustmentCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
 
     override func awakeFromNib() {
-        super.awakeFromNib()        
+        super.awakeFromNib()
         self.setupUI()
     }
 
@@ -35,8 +35,6 @@ class AdjustmentCell: UICollectionViewCell {
         imageView.tintColor = isSelected ? .systemBackground : .label
         contentView.backgroundColor = isSelected ? .label : .systemGray6
         contentView.layer.borderColor = (isSelected ? UIColor.systemYellow : UIColor.lightGray).cgColor
-
-        print("AdjustmentCell: \(isSelected)")
     }
 
 }

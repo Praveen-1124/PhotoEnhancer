@@ -14,7 +14,6 @@ class FilterCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
     }
 
     override func prepareForReuse() {
@@ -29,6 +28,7 @@ class FilterCell: UICollectionViewCell {
     }
 
     func configure(title: String, image: UIImage?, isSelected: Bool) {
+
         titleLabel.text = title
         backgroundImageView.image = image
         titleLabel.textColor = isSelected ? .systemYellow : .label

@@ -18,17 +18,13 @@ final class CameraViewController: UIViewController {
     private var selectedFilter: CameraFilter = .original
     private var thumbnailImages: [CameraFilter: UIImage] = [:]
 
-    private var recordingTimer: Timer?
-    private var recordingSeconds = 0
-    private var isRecording = false
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
     }
 
     deinit {
-
+        print("\(Self.self): Deinited")
     }
 
     private func setupUI() {
@@ -44,32 +40,7 @@ final class CameraViewController: UIViewController {
 
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.register([CameraFilterCell.self])        
-    }
-
-    @IBAction func capturePhoto(_ sender: UIButton) {
-        captureManager.capturePhoto { image in
-            guard let image else { return }
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-            print("Photo Saved")
-        }
-    }
-    
-
-  private func toggleRecording() {
-        //
-        //        isRecording.toggle()
-        //
-        //        if isRecording {
-        //
-        //            recordButton.setTitle("STOP", for: .normal)
-        //            captureManager.startRecording()
-        //
-        //        } else {
-        //
-        //            recordButton.setTitle("REC", for: .normal)
-        //            captureManager.stopRecording()
-        //        }
+        collectionView.register([CameraFilterCell.self])
     }
 
     private func checkPermissions() {
@@ -81,6 +52,13 @@ final class CameraViewController: UIViewController {
                     self.captureManager.configure()
                 }
             }
+        }
+    }
+
+    @IBAction func capturePhoto(_ sender: UIButton) {
+        captureManager.capturePhoto { image in
+            guard let image else { return }
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
         }
     }
 }
@@ -95,97 +73,7 @@ extension CameraViewController: CaptureManagerDelegate {
 }
 
 
-//MARK: Features
-extension CameraViewController {
-
-    @objc
-    private func handleFocusTap(_ gesture: UITapGestureRecognizer) {
-
-        let point = gesture.location(in: previewView)
-        let normalized = CGPoint(x: point.y / previewView.bounds.height, y: 1 - (point.x / previewView.bounds.width))
-        captureManager.focus(at: normalized)
-        showFocusRing(at: point)
-    }
-
-    private func showFocusRing(at point: CGPoint) {
-//
-//        focusRingView.center = point
-//
-//        focusRingView.transform =
-//        CGAffineTransform(scaleX: 1.5, y: 1.5)
-//
-//        focusRingView.alpha = 1
-//
-//        UIView.animate(
-//            withDuration: 0.25
-//        ) {
-//
-//            self.focusRingView.transform = .identity
-//
-//        } completion: { _ in
-//
-//            UIView.animate(
-//                withDuration: 0.25,
-//                delay: 0.5
-//            ) {
-//
-//                self.focusRingView.alpha = 0
-//            }
-//        }
-    }
-
-    @objc
-    private func switchCamera() {
-
-        UIView.transition(with: previewView, duration: 0.35, options: .transitionFlipFromLeft) {
-        } completion: { _ in
-        }
-
-        captureManager.switchCamera()
-    }
-
-    private func startRecordingTimer() {
-
-//        recordingSeconds = 0
-//
-//        durationLabel.text = "00:00"
-//
-//        recordingTimer?.invalidate()
-//
-//        recordingTimer = Timer.scheduledTimer(
-//            withTimeInterval: 1,
-//            repeats: true
-//        ) { [weak self] _ in
-//
-//            guard let self else { return }
-//
-//            self.recordingSeconds += 1
-//
-//            let minutes =
-//            self.recordingSeconds / 60
-//
-//            let seconds =
-//            self.recordingSeconds % 60
-//
-//            self.durationLabel.text =
-//            String(
-//                format: "%02d:%02d",
-//                minutes,
-//                seconds
-//            )
-//        }
-    }
-
-    private func stopRecordingTimer() {
-
-        recordingTimer?.invalidate()
-
-        recordingTimer = nil
-    }
-}
-
 // MARK: CollectionView Delegate
-
 extension CameraViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
