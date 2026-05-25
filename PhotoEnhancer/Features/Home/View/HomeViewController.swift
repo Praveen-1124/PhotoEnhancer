@@ -34,7 +34,7 @@ class HomeViewController: UIViewController {
 
     private func showPickerView(feature: Feature) {
 
-        PhotoPickerManager.shared.presentPicker(from: self) { [weak self] image in
+        PhotoPickerManager.shared.presentPicker(from: self) { [weak self] image, fileName in
             guard let self else {
                 return
             }
@@ -46,6 +46,8 @@ class HomeViewController: UIViewController {
                     self.moveToImageEditorVC(image: originalImage)
                 } else if feature == .backgroundRemover {
                     self.moveToBGRemoverVC(image: originalImage)
+                } else if feature == .photoUpscaler {
+                    self.moveToImageUpscaleVC(image: originalImage, fileName: fileName)
                 }
             }
         }
@@ -66,5 +68,14 @@ class HomeViewController: UIViewController {
         let vc = storyboard?.instantiateViewController(withIdentifier: "BackgroundRemoverViewController") as! BackgroundRemoverViewController
         vc.originalImage = image
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+
+    private func moveToImageUpscaleVC(image: UIImage, fileName: String?) {
+
+        let vc = storyboard?.instantiateViewController(withIdentifier: "ImageUpscaleViewController") as! ImageUpscaleViewController
+        vc.originalImage = image
+        vc.fileName = fileName
+        self.navigationController?.pushViewController(vc, animated: true)
+
     }
 }

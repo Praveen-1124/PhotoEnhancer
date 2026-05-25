@@ -12,13 +12,13 @@ import PhotosUI
 final class PhotoPickerManager: NSObject {
 
     static let shared = PhotoPickerManager()
-    private var completion: ((UIImage?) -> Void)?
+    private var completion: ((_ image: UIImage?, _ fileName: String?) -> Void)?
 
     private override init() {
 
     }
 
-    func presentPicker(from viewController: UIViewController, completion: @escaping (UIImage?) -> Void) {
+    func presentPicker(from viewController: UIViewController, completion: @escaping (UIImage?, String?) -> Void) {
 
         self.completion = completion
 
@@ -39,19 +39,45 @@ extension PhotoPickerManager: PHPickerViewControllerDelegate {
 
         picker.dismiss(animated: true)
 
-        guard let itemProvider = results.first?.itemProvider else {
-            completion?(nil)
+        guard let result = results.first else { return }
+        let provider = result.itemProvider
+
+        guard provider.canLoadObject(ofClass: UIImage.self) else {
+            completion?(nil, nil)
             return
         }
 
-        guard itemProvider.canLoadObject(ofClass: UIImage.self) else {
-            completion?(nil)
-            return
-        }
+        let (fileName, extn) : (String?, String?) = {
+            guard let assetId = result.assetIdentifier else {
+                return (provider.suggestedName, nil)
+            }
 
-        itemProvider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
+            let fetchResult = PHAsset.fetchAssets(
+                withLocalIdentifiers: [assetId],
+                options: nil
+            )
+
+            guard let asset = fetchResult.firstObject,
+                  let resource = PHAssetResource.assetResources(for: asset).first else {
+                return (provider.suggestedName, nil)
+            }
+
+
+            let utType: UTType
+            if #available(iOS 26.0, *) {
+                utType = resource.contentType
+            } else {
+                // Fallback on earlier versions
+                utType = UTType(resource.uniformTypeIdentifier) ?? .png
+            }
+            return (resource.originalFilename, utType.preferredFilenameExtension.orEmpty)
+        }()
+
+        print("fileName: \(fileName) ext: \(extn)")
+
+        provider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
             DispatchQueue.main.async {
-                self?.completion?(image as? UIImage)
+                self?.completion?(image as? UIImage, fileName.orEmpty)
             }
         }
     }

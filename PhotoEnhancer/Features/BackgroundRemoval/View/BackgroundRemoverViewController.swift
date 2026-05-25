@@ -41,23 +41,12 @@ class BackgroundRemoverViewController: UIViewController {
                 self.editedImage = output
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.showError(message:error.localizedDescription)
+                    self.showAlert(type: .error, message: error.localizedDescription)
                 }
             }
         }
     }
-    
-    private func showError(message: String) {
-        
-        let alert = UIAlertController(title: "Oops!", message: message, preferredStyle: .alert)
-        let alertAction = UIAlertAction(title: "Okay", style: .default) { _ in
-            self.navigationController?.popViewController(animated: true)
-        }
-        alert.addAction(alertAction)
-        present(alert, animated: true)
-        
-    }
-    
+
     @IBAction func didClickSegmentControl(_ sender: UISegmentedControl) {
         
         let isEditedImage = sender.selectedSegmentIndex == 1
