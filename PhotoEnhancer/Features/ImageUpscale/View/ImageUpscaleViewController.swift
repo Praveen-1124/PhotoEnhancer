@@ -52,8 +52,10 @@ class ImageUpscaleViewController: UIViewController {
 
 
     @IBAction func didChangeQuality(_ sender: UISlider) {
-        compressionQuality = CGFloat(sender.value * 100)
-        compressionQualityLabel.text = "\(Int(compressionQuality))%"
+
+        let sliderValue = CGFloat(sender.value)
+        compressionQuality = sliderValue
+        compressionQualityLabel.text = "\(Int(sliderValue * 100))%"
     }
 
     @IBAction func didClickResizeButton(_ sender: FeatureButton) {

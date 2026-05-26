@@ -73,8 +73,6 @@ extension PhotoPickerManager: PHPickerViewControllerDelegate {
             return (resource.originalFilename, utType.preferredFilenameExtension.orEmpty)
         }()
 
-        print("fileName: \(fileName) ext: \(extn)")
-
         provider.loadObject(ofClass: UIImage.self) { [weak self] image, error in
             DispatchQueue.main.async {
                 self?.completion?(image as? UIImage, fileName.orEmpty)

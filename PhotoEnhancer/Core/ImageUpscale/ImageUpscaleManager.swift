@@ -121,7 +121,6 @@ private extension ImageUpscaleManager {
             return nil
         }
 
-//        let scaledUIImage = UIImage(cgImage: outputCGImage)
         let scaledUIImage = UIImage(cgImage: outputCGImage, scale: 1.0, orientation: .up)
         return cropOrFit(image: scaledUIImage, canvasSize: targetSize, shouldCrop: configuration.shouldCrop)
     }
