@@ -13,7 +13,8 @@ enum Feature: CaseIterable {
     case photoFilters
     case backgroundRemover
     case objectRemover
-    case photoUpscaler
+    case imageResize
+    case imageUpscale
 
     var title: String {
         switch self {
@@ -25,8 +26,10 @@ enum Feature: CaseIterable {
             return "Background Remover"
         case .objectRemover:
             return "Object Remover"
-        case .photoUpscaler:
-            return "Photo Upscaling"
+        case .imageResize:
+            return "Photo Resize"
+        case .imageUpscale:
+            return "Image Upscale"
         }
     }
 

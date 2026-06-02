@@ -84,6 +84,33 @@ extension UIImage {
             return .up
         }
     }
+
+    func croppedSquareImage(targetSize: CGSize = CGSize(width: 512, height: 512)) -> UIImage? {
+
+        guard let cgImage = self.cgImage else {
+            return nil
+        }
+
+        let width = CGFloat(cgImage.width)
+        let height = CGFloat(cgImage.height)
+
+        // MARK: Square Crop Size
+        let cropSize = min(width, height)
+        // MARK: Center Crop Origin
+        let cropX = (width - cropSize) / 2
+        let cropY = (height - cropSize) / 2
+        let cropRect = CGRect(x: cropX, y: cropY, width: cropSize, height: cropSize)
+
+        guard let croppedCGImage = cgImage.cropping(to: cropRect) else {
+            return nil
+        }
+
+        let croppedImage = UIImage(cgImage: croppedCGImage, scale: self.scale, orientation: self.imageOrientation)
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        return renderer.image { _ in
+            croppedImage.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+    }
 }
 
 //MARK: - CIImage

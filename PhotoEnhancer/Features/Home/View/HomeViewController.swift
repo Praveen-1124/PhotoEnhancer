@@ -26,7 +26,7 @@ class HomeViewController: UIViewController {
 
         let feature = Feature.allCases[sender.tag]
         if feature == .camera {
-            moveToCameraVC()
+            moveToCameraVC(feature: feature)
         } else {
             showPickerView(feature: feature)
         }
@@ -41,41 +41,56 @@ class HomeViewController: UIViewController {
             guard let originalImage = image else {
                 return
             }
-            DispatchQueue.main.async {
-                if feature == .photoFilters {
-                    self.moveToImageEditorVC(image: originalImage)
-                } else if feature == .backgroundRemover {
-                    self.moveToBGRemoverVC(image: originalImage)
-                } else if feature == .photoUpscaler {
-                    self.moveToImageUpscaleVC(image: originalImage, fileName: fileName)
-                }
+            if feature == .photoFilters {
+                self.moveToImageEditorVC(feature: feature, image: originalImage)
+            } else if feature == .backgroundRemover {
+                self.moveToBGRemoverVC(feature: feature, image: originalImage)
+            } else if feature == .imageResize {
+                self.moveToImageResizeVC(feature: feature, image: originalImage, fileName: fileName)
+            } else if feature == .imageUpscale {
+                self.moveToImageUpscaleVC(feature: feature, image: originalImage)
             }
         }
     }
 
-    private func moveToCameraVC() {
+    private func moveToCameraVC(feature: Feature) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "CameraViewController") as! CameraViewController
+        vc.title = feature.title
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
-    private func moveToImageEditorVC(image: UIImage) {
+    private func moveToImageEditorVC(feature: Feature, image: UIImage) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "ImageEditorViewController") as! ImageEditorViewController
+        vc.title = feature.title
         vc.originalImage = image
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
-    private func moveToBGRemoverVC(image: UIImage) {
+    private func moveToBGRemoverVC(feature: Feature, image: UIImage) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "BackgroundRemoverViewController") as! BackgroundRemoverViewController
+        vc.title = feature.title
         vc.originalImage = image
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
-    private func moveToImageUpscaleVC(image: UIImage, fileName: String?) {
-
+    private func moveToImageResizeVC(feature: Feature, image: UIImage, fileName: String?) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "ImageUpscaleViewController") as! ImageUpscaleViewController
+        vc.title = feature.title
         vc.originalImage = image
         vc.fileName = fileName
         self.navigationController?.pushViewController(vc, animated: true)
 
+    }
+
+    private func moveToImageUpscaleVC(feature: Feature, image: UIImage) {
+
+        let targetSize = CGSize(width: 512, height: 512)
+        guard let croppedImage = image.croppedSquareImage(targetSize: targetSize) else {
+            return
+        }
+        let vc = storyboard?.instantiateViewController(withIdentifier: "RealESRGANUpscaleViewController") as! RealESRGANUpscaleViewController
+        vc.title = feature.title
+        vc.originalImage = croppedImage
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }

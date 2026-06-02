@@ -29,7 +29,7 @@ final class CameraViewController: UIViewController {
 
     private func setupUI() {
 
-        self.title = "Camera"
+//        self.title = "Camera"
         checkPermissions()
         setupCollectionView()
         captureManager.delegate = self

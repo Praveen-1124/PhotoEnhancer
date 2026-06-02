@@ -16,7 +16,7 @@ extension Optional where Wrapped == String {
     }
 }
 
-//MARK: -String
+//MARK: - String
 
 extension String {
 

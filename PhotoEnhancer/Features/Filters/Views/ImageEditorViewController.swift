@@ -29,8 +29,7 @@ class ImageEditorViewController: UIViewController {
     }
 
     private func setupUI() {
-
-        self.title = "Filters"
+       
         sliderView.alpha = 0
         setupCollectionView()
         viewModel.setOriginalImage(image: originalImage)
